@@ -4,5 +4,5 @@
 
 [[redirects]]
   from = "/api/*"
-  to = "https://tvoj-backend.onrender.com/:splat"
+  to = "https://event-app-uiuf.onrender.com/:splat"
   status = 200
