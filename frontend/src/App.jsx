@@ -4,6 +4,7 @@ import imageCompression from "browser-image-compression";
 import { FaDownload, FaCloudUploadAlt } from "react-icons/fa";
 
 const API = import.meta.env.VITE_API_URL || "http://localhost:5000";
+const AUTH_TOKEN = "fb2fd7be394babc2d1267f350da9b464cfe780796568d3f40ee17056dcbdcb27";
 
 export default function App() {
   const [files, setFiles] = useState([]);
@@ -12,8 +13,6 @@ export default function App() {
   const [uploading, setUploading] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-
-  const authToken = localStorage.getItem("auth_token") || "";
 
   useEffect(() => {
     fetchFiles();
@@ -59,7 +58,7 @@ export default function App() {
             fileSize: uploadFile.size,
           },
           {
-            headers: { Authorization: `Bearer ${authToken}` },
+            headers: { Authorization: `Bearer ${AUTH_TOKEN}` },
           }
         );
 
@@ -72,6 +71,7 @@ export default function App() {
         });
       } catch (err) {
         console.error("Upload failed for:", file.name);
+        setError("Upload neuspešan. Pokušajte ponovo.");
       }
     }
 
