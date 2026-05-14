@@ -40,14 +40,16 @@ export default function App() {
     for (let file of files) {
       let uploadFile = file;
 
-      if (file.type.startsWith("image")) {
-        try {
-          const options = { maxSizeMB: 1, maxWidthOrHeight: 1920, useWebWorker: true };
-          uploadFile = await imageCompression(file, options);
-        } catch (err) {
-          console.error("Kompresija neuspešna za:", file.name);
-        }
-      }
+    if (file.type.startsWith("image")) {
+  try {
+    const options = { maxSizeMB: 1, maxWidthOrHeight: 1920, useWebWorker: false };
+    uploadFile = await imageCompression(file, options);
+  } catch (err) {
+    console.error("Kompresija neuspešna za:", file.name);
+    uploadFile = file; // Fallback na originalni fajl
+  }
+}
+
 
       try {
         const { data } = await axios.post(
