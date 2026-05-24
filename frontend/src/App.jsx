@@ -183,7 +183,7 @@ export default function App() {
                   className="video-thumbnail-wrapper" 
                   onClick={() => setActiveMedia({ ...file, index: i })}
                 >
-                  <video src={file.url} preload="metadata" playsInline  />
+                  <video src={`${file.url}#t=0.001`} preload="metadata" playsInline muted />
                   <div className="video-play-overlay">▶</div>
                 </div>
               )}
@@ -201,7 +201,7 @@ export default function App() {
         </main>
       )}
 
-      {/* ─── LIGHTBOX MODAL SA SWIPE PODRŠKOM ─── */}
+      {/* ─── LIGHTBOX MODAL SA SWIPE I DOWNLOAD OPCIJOM ─── */}
       {activeMedia && (() => {
         let touchStartX = 0;
         let touchEndX = 0;
@@ -218,13 +218,11 @@ export default function App() {
         const handleSwipe = () => {
           const swipeThreshold = 50; 
           
-          // Swipe ulevo -> sledeća stavka
           if (touchStartX - touchEndX > swipeThreshold && activeMedia.index < gallery.length - 1) {
             const nextIdx = activeMedia.index + 1;
             setActiveMedia({ ...gallery[nextIdx], index: nextIdx });
           }
           
-          // Swipe udesno -> prethodna stavka
           if (touchEndX - touchStartX > swipeThreshold && activeMedia.index > 0) {
             const prevIdx = activeMedia.index - 1;
             setActiveMedia({ ...gallery[prevIdx], index: prevIdx });
@@ -238,6 +236,18 @@ export default function App() {
             onTouchStart={handleTouchStart}
             onTouchEnd={handleTouchEnd}
           >
+            {/* Diskretno Download dugme u gornjem levom uglu modala */}
+            <a 
+              href={activeMedia.downloadUrl} 
+              className="lightbox-download-btn"
+              title="Preuzmi fajl"
+              download
+              onClick={(e) => e.stopPropagation()} // Sprečava zatvaranje modala prilikom klika
+            >
+              <FaDownload />
+            </a>
+
+            {/* Dugme za zatvaranje u desnom uglu */}
             <button className="lightbox-close" onClick={() => setActiveMedia(null)}>×</button>
             
             {/* Strelica Levo */}
