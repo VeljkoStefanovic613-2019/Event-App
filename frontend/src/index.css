@@ -1,22 +1,27 @@
 :root {
-  /* Premium paleta: Smaragdno zelena, mat crna i šampanjac zlato */
-  --bg: #040d08;            /* Ultra tamna smaragdno zelena */
-  --surface: #0a140f;       /* Tamno zelena površina za kartice */
-  --surface-light: #122219; /* Svetlija zelena za hover efekte */
-  --accent: #d4af37;        /* Klasično zlato (Metallic Gold) */
-  --accent-bright: #f3e5ab; /* Svetlo zlato (Champagne) */
+  --bg: #040d08;            
+  --surface: #0a140f;       
+  --surface-light: #122219; 
+  --accent: #d4af37;        
+  --accent-bright: #f3e5ab; 
   --text: #ffffff;
-  --text-dim: #a3b899;      /* Prigušeni tekst sa blagim zelenim tonom */
+  --text-dim: #a3b899;      
   --gold-gradient: linear-gradient(135deg, #bf953f 0%, #fcf6ba 25%, #b38728 50%, #fbf5b7 75%, #aa771c 100%);
+}
+
+html {
+  background: var(--bg);
+  background-image: radial-gradient(circle at 50% -10%, #081d12 0%, var(--bg) 80%);
+  background-attachment: fixed;
+  min-height: 100%;
 }
 
 body {
   margin: 0;
-  background: var(--bg);
+  background: transparent; 
   color: var(--text);
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
   -webkit-font-smoothing: antialiased;
-  background-image: radial-gradient(circle at 50% -20%, #0d2d1d 0%, var(--bg) 70%);
 }
 
 .container {
@@ -145,7 +150,6 @@ body {
   box-shadow: 0 0 15px rgba(212, 175, 55, 0.3);
 }
 
-/* Grid i kartice */
 .grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr); 
@@ -302,7 +306,6 @@ body {
   font-style: italic;
 }
 
-/* ─── LIGHTBOX MODAL STILOVI ─── */
 .lightbox-overlay {
   position: fixed;
   top: 0;
@@ -337,7 +340,6 @@ body {
   border: 1px solid rgba(212, 175, 55, 0.2);
 }
 
-/* Diskretno dugme za download unutar samog Modala */
 .lightbox-download-btn {
   position: absolute;
   top: 25px;
@@ -432,7 +434,6 @@ body {
     right: 20px;
     font-size: 38px;
   }
-  /* Prilagođavanje download dugmeta na mobilnim ekranima */
   .lightbox-download-btn {
     top: 15px;
     left: 20px;
