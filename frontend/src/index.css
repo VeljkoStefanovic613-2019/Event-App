@@ -1,9 +1,13 @@
 :root {
-  --bg: #050505;
-  --surface: #111111;
-  --accent: #00f2ff;
+  /* Premium paleta: Smaragdno zelena, mat crna i šampanjac zlato */
+  --bg: #040d08;            /* Ultra tamna smaragdno zelena */
+  --surface: #0a140f;       /* Tamno zelena površina za kartice */
+  --surface-light: #122219; /* Svetlija zelena za hover efekte */
+  --accent: #d4af37;        /* Klasično zlato (Metallic Gold) */
+  --accent-bright: #f3e5ab; /* Svetlo zlato (Champagne) */
   --text: #ffffff;
-  --text-dim: #888888;
+  --text-dim: #a3b899;      /* Prigušeni tekst sa blagim zelenim tonom */
+  --gold-gradient: linear-gradient(135deg, #bf953f 0%, #fcf6ba 25%, #b38728 50%, #fbf5b7 75%, #aa771c 100%);
 }
 
 body {
@@ -12,6 +16,7 @@ body {
   color: var(--text);
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
   -webkit-font-smoothing: antialiased;
+  background-image: radial-gradient(circle at 50% -20%, #0d2d1d 0%, var(--bg) 70%);
 }
 
 .container {
@@ -33,52 +38,91 @@ body {
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
+    border-bottom: 1px solid rgba(212, 175, 55, 0.1);
+    padding-bottom: 20px;
   }
 }
 
-h1 {
-  font-size: 28px;
+.premium-title {
+  font-size: 32px;
   font-weight: 900;
   margin: 0;
-  letter-spacing: -1px;
+  letter-spacing: 1px;
+  text-align: center;
+  filter: drop-shadow(0px 2px 4px rgba(0, 0, 0, 0.5));
 }
 
-h1 span { color: var(--accent); }
+.gold-text {
+  background: var(--gold-gradient);
+  -webkit-background-clip: text;
+  -moz-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  display: inline-block;
+  padding: 0 6px;
+}
 
 .actions {
   display: flex;
-  gap: 10px;
+  gap: 12px;
   flex-wrap: wrap;
 }
 
 .custom-upload {
   background: var(--surface);
+  color: var(--accent-bright);
   padding: 12px 20px;
   border-radius: 8px;
   cursor: pointer;
   font-size: 14px;
-  border: 1px solid #222;
+  font-weight: 600;
+  border: 1px solid rgba(212, 175, 55, 0.2);
   flex: 1;
   text-align: center;
-  transition: 0.3s;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.custom-upload:hover {
+  background: var(--surface-light);
+  border-color: var(--accent);
+  box-shadow: 0 0 10px rgba(212, 175, 55, 0.1);
 }
 
 .custom-upload input { display: none; }
 
 .btn-primary {
-  background: var(--accent);
-  color: #000;
+  background: var(--gold-gradient);
+  color: #111;
   padding: 12px 25px;
   border-radius: 8px;
-  font-weight: 700;
+  font-weight: 800;
   border: none;
   cursor: pointer;
   flex: 1;
+  letter-spacing: 0.5px;
+  transition: transform 0.2s, box-shadow 0.3s;
+  box-shadow: 0 4px 15px rgba(170, 119, 28, 0.3);
+}
+
+.btn-primary:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(212, 175, 55, 0.4);
+}
+
+.btn-primary:active:not(:disabled) {
+  transform: translateY(0);
 }
 
 .btn-primary:disabled {
-  background: #333;
-  color: #666;
+  background: #1a241f;
+  color: #44524a;
+  border: 1px solid #232f28;
+  box-shadow: none;
+  cursor: not-allowed;
 }
 
 .btn-download {
@@ -86,18 +130,26 @@ h1 span { color: var(--accent); }
   align-items: center;
   justify-content: center;
   background: var(--surface);
-  color: var(--text);
+  color: var(--accent);
   width: 45px;
   height: 45px;
   border-radius: 8px;
   text-decoration: none;
-  border: 1px solid #222;
+  border: 1px solid rgba(212, 175, 55, 0.2);
+  transition: all 0.3s;
 }
 
+.btn-download:hover {
+  background: var(--accent);
+  color: #000;
+  box-shadow: 0 0 15px rgba(212, 175, 55, 0.3);
+}
+
+/* Grid i kartice */
 .grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr); 
-  gap: 10px;
+  gap: 12px;
 }
 
 @media (min-width: 768px) {
@@ -113,6 +165,14 @@ h1 span { color: var(--accent); }
   background: var(--surface);
   border-radius: 12px;
   overflow: hidden;
+  border: 1px solid rgba(212, 175, 55, 0.15);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  border-color: var(--accent);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5), 0 0 12px rgba(212, 175, 55, 0.15);
 }
 
 .card img, .card video {
@@ -121,14 +181,51 @@ h1 span { color: var(--accent); }
   object-fit: cover;
 }
 
-/* NOVO: Stil za download dugme na kartici */
-.single-download-btn {
+.clickable-media {
+  cursor: pointer;
+}
+
+.video-thumbnail-wrapper {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+}
+
+.video-play-overlay {
   position: absolute;
-  top: 10px;
-  right: 10px;
-  background: rgba(0, 0, 0, 0.5);
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(10, 20, 15, 0.75);
   backdrop-filter: blur(4px);
   color: var(--accent);
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  border: 1px solid rgba(212, 175, 55, 0.3);
+  pointer-events: none;
+  transition: all 0.3s ease;
+}
+
+.card:hover .video-play-overlay {
+  background: var(--gold-gradient);
+  color: #000;
+  border-color: transparent;
+  transform: translate(-50%, -50%) scale(1.1);
+}
+
+.single-download-btn {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: rgba(10, 20, 15, 0.75);
+  backdrop-filter: blur(6px);
+  color: var(--accent-bright);
   width: 38px;
   height: 38px;
   border-radius: 50%;
@@ -136,21 +233,26 @@ h1 span { color: var(--accent); }
   align-items: center;
   justify-content: center;
   text-decoration: none;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(212, 175, 55, 0.3);
   opacity: 0;
-  transition: 0.3s ease;
+  transition: all 0.3s ease;
   z-index: 5;
+}
+
+.single-download-btn:hover {
+  background: var(--gold-gradient);
+  color: #000;
+  border-color: transparent;
 }
 
 .card:hover .single-download-btn {
   opacity: 1;
 }
 
-/* Vidljivost na mobilnom */
 @media (max-width: 768px) {
   .single-download-btn {
     opacity: 1;
-    background: rgba(0, 0, 0, 0.3);
+    background: rgba(10, 20, 15, 0.8);
   }
 }
 
@@ -159,16 +261,146 @@ h1 span { color: var(--accent); }
   padding: 15px;
   border-radius: 8px;
   margin-bottom: 30px;
+  border: 1px solid rgba(212, 175, 55, 0.1);
+}
+
+.progress-info {
+  display: flex;
+  justify-content: space-between;
+  font-size: 13px;
+  color: var(--text-dim);
+  margin-bottom: 6px;
 }
 
 .progress-bar {
-  height: 4px;
-  background: #222;
+  height: 5px;
+  background: #121e17;
   border-radius: 10px;
   overflow: hidden;
 }
 
 .progress-fill {
   height: 100%;
-  background: var(--accent);
+  background: var(--gold-gradient);
+}
+
+.error-msg {
+  color: #ff6b6b;
+  background: rgba(255, 107, 107, 0.1);
+  padding: 12px;
+  border-radius: 6px;
+  border: 1px solid rgba(255, 107, 107, 0.2);
+  text-align: center;
+}
+
+.loading-msg, .empty-msg {
+  text-align: center;
+  color: var(--text-dim);
+  font-size: 16px;
+  margin-top: 40px;
+  font-style: italic;
+}
+
+/* ─── LIGHTBOX MODAL STILOVI ─── */
+.lightbox-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(4, 13, 8, 0.96); 
+  backdrop-filter: blur(10px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  animation: fadeIn 0.2s ease-out;
+  user-select: none; /* Sprečava plavo selektovanje teksta tokom swipe-a */
+}
+
+.lightbox-content {
+  max-width: 90%;
+  max-height: 85%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.lightbox-content img,
+.lightbox-content video {
+  max-width: 100%;
+  max-height: 85vh;
+  object-fit: contain;
+  border-radius: 12px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.8), 0 0 30px rgba(212, 175, 55, 0.15);
+  border: 1px solid rgba(212, 175, 55, 0.2);
+}
+
+.lightbox-close {
+  position: absolute;
+  top: 20px;
+  right: 25px;
+  background: none;
+  border: none;
+  color: var(--accent-bright);
+  font-size: 45px;
+  font-weight: 300;
+  cursor: pointer;
+  transition: transform 0.2s, color 0.2s;
+  z-index: 1010;
+}
+
+.lightbox-close:hover {
+  transform: scale(1.2);
+  color: var(--accent);
+}
+
+.lightbox-nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(10, 20, 15, 0.6);
+  border: 1px solid rgba(212, 175, 55, 0.3);
+  color: var(--accent-bright);
+  font-size: 40px;
+  width: 55px;
+  height: 55px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  z-index: 1010;
+  padding-bottom: 6px;
+}
+
+.lightbox-nav:hover {
+  background: var(--gold-gradient);
+  color: #111;
+  border-color: transparent;
+  box-shadow: 0 0 15px rgba(212, 175, 55, 0.4);
+}
+
+.nav-left { left: 25px; }
+.nav-right { right: 25px; }
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@media (max-width: 768px) {
+  .lightbox-nav {
+    width: 45px;
+    height: 45px;
+    font-size: 30px;
+  }
+  .nav-left { left: 10px; }
+  .nav-right { right: 10px; }
+  .lightbox-close {
+    top: 15px;
+    right: 20px;
+    font-size: 38px;
+  }
 }

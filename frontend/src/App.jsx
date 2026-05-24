@@ -13,12 +13,35 @@ export default function App() {
   const [uploading, setUploading] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  
+  // Stanje za modalni pregled (Lightbox)
+  const [activeMedia, setActiveMedia] = useState(null);
 
   useEffect(() => {
     fetchFiles();
     const interval = setInterval(fetchFiles, 30000);
     return () => clearInterval(interval);
   }, []);
+
+  // Navigacija preko tastature (Desktop)
+  useEffect(() => {
+    if (!activeMedia) return;
+
+    const handleKeyDown = (e) => {
+      if (e.key === "Escape") {
+        setActiveMedia(null);
+      } else if (e.key === "ArrowLeft" && activeMedia.index > 0) {
+        const prevIndex = activeMedia.index - 1;
+        setActiveMedia({ ...gallery[prevIndex], index: prevIndex });
+      } else if (e.key === "ArrowRight" && activeMedia.index < gallery.length - 1) {
+        const nextIndex = activeMedia.index + 1;
+        setActiveMedia({ ...gallery[nextIndex], index: nextIndex });
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [activeMedia, gallery]);
 
   const fetchFiles = async () => {
     try {
@@ -40,16 +63,15 @@ export default function App() {
     for (let file of files) {
       let uploadFile = file;
 
-    if (file.type.startsWith("image")) {
-  try {
-    const options = { maxSizeMB: 1, maxWidthOrHeight: 1920, useWebWorker: false };
-    uploadFile = await imageCompression(file, options);
-  } catch (err) {
-    console.error("Kompresija neuspešna za:", file.name);
-    uploadFile = file; // Fallback na originalni fajl
-  }
-}
-
+      if (file.type.startsWith("image")) {
+        try {
+          const options = { maxSizeMB: 1, maxWidthOrHeight: 1920, useWebWorker: false };
+          uploadFile = await imageCompression(file, options);
+        } catch (err) {
+          console.error("Kompresija neuspešna za:", file.name);
+          uploadFile = file;
+        }
+      }
 
       try {
         const { data } = await axios.post(
@@ -83,10 +105,14 @@ export default function App() {
     fetchFiles();
   };
 
+  const isImage = (key) => /\.(jpeg|jpg|gif|png|webp)$/i.test(key);
+
   return (
     <div className="container">
       <header className="header">
-        <h1>EVENT<span>GALLERY</span></h1>
+        <h1 className="premium-title">
+          🍀<span className="gold-text">28.05.2026.</span>🍀
+        </h1>
 
         <div className="actions">
           <label className="custom-upload">
@@ -144,10 +170,22 @@ export default function App() {
         <main className="grid">
           {gallery.map((file, i) => (
             <div key={file.key || i} className="card">
-              {file.key.match(/\.(jpeg|jpg|gif|png|webp)$/i) ? (
-                <img src={file.url} alt={`Upload ${i}`} loading="lazy" />
+              {isImage(file.key) ? (
+                <img
+                  src={file.url}
+                  alt={`Upload ${i}`}
+                  loading="lazy"
+                  onClick={() => setActiveMedia({ ...file, index: i })}
+                  className="clickable-media"
+                />
               ) : (
-                <video src={file.url} controls playsInline />
+                <div 
+                  className="video-thumbnail-wrapper" 
+                  onClick={() => setActiveMedia({ ...file, index: i })}
+                >
+                  <video src={file.url} preload="none" playsInline />
+                  <div className="video-play-overlay">▶</div>
+                </div>
               )}
 
               <a
@@ -162,6 +200,85 @@ export default function App() {
           ))}
         </main>
       )}
+
+      {/* ─── LIGHTBOX MODAL SA SWIPE PODRŠKOM ─── */}
+      {activeMedia && (() => {
+        let touchStartX = 0;
+        let touchEndX = 0;
+
+        const handleTouchStart = (e) => {
+          touchStartX = e.changedTouches[0].screenX;
+        };
+
+        const handleTouchEnd = (e) => {
+          touchEndX = e.changedTouches[0].screenX;
+          handleSwipe();
+        };
+
+        const handleSwipe = () => {
+          const swipeThreshold = 50; 
+          
+          // Swipe ulevo -> sledeća stavka
+          if (touchStartX - touchEndX > swipeThreshold && activeMedia.index < gallery.length - 1) {
+            const nextIdx = activeMedia.index + 1;
+            setActiveMedia({ ...gallery[nextIdx], index: nextIdx });
+          }
+          
+          // Swipe udesno -> prethodna stavka
+          if (touchEndX - touchStartX > swipeThreshold && activeMedia.index > 0) {
+            const prevIdx = activeMedia.index - 1;
+            setActiveMedia({ ...gallery[prevIdx], index: prevIdx });
+          }
+        };
+
+        return (
+          <div 
+            className="lightbox-overlay" 
+            onClick={() => setActiveMedia(null)}
+            onTouchStart={handleTouchStart}
+            onTouchEnd={handleTouchEnd}
+          >
+            <button className="lightbox-close" onClick={() => setActiveMedia(null)}>×</button>
+            
+            {/* Strelica Levo */}
+            {activeMedia.index > 0 && (
+              <button 
+                className="lightbox-nav nav-left" 
+                onClick={(e) => {
+                  e.stopPropagation();
+                  const newIdx = activeMedia.index - 1;
+                  setActiveMedia({ ...gallery[newIdx], index: newIdx });
+                }}
+              >
+                &#8249;
+              </button>
+            )}
+
+            {/* Glavni prikaz medija */}
+            <div className="lightbox-content" onClick={(e) => e.stopPropagation()}>
+              {isImage(activeMedia.key) ? (
+                <img src={activeMedia.url} alt="Pregled" />
+              ) : (
+                <video src={activeMedia.url} controls autoPlay playsInline />
+              )}
+            </div>
+
+            {/* Strelica Desno */}
+            {activeMedia.index < gallery.length - 1 && (
+              <button 
+                className="lightbox-nav nav-right" 
+                onClick={(e) => {
+                  e.stopPropagation();
+                  const newIdx = activeMedia.index + 1;
+                  setActiveMedia({ ...gallery[newIdx], index: newIdx });
+                }}
+              >
+                &#8250;
+              </button>
+            )}
+          </div>
+        );
+      })()}
     </div>
   );
 }
