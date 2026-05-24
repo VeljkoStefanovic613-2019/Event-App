@@ -183,7 +183,7 @@ export default function App() {
                   className="video-thumbnail-wrapper" 
                   onClick={() => setActiveMedia({ ...file, index: i })}
                 >
-                  <video src={file.url} preload="none" playsInline />
+                  <video src={file.url} playsInline />
                   <div className="video-play-overlay">▶</div>
                 </div>
               )}
