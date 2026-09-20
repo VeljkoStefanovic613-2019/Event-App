@@ -110,9 +110,23 @@ export default function App() {
   return (
     <div className="container">
       <header className="header">
-        <h1 className="premium-title">
-          🍀<span className="gold-text">28.05.2026.</span>🍀
-        </h1>
+        <div className="header-content">
+          <div className="header-deco-top">
+            <span className="deco-line"></span>
+            <span className="deco-icon">✦</span>
+            <span className="deco-line"></span>
+          </div>
+          
+          <h1 className="couple-names">
+            Teodora <span className="ampersand">&amp;</span> Jovan
+          </h1>
+          
+          <div className="header-deco-bottom">
+            <span className="deco-dot"></span>
+            <p className="wedding-date">04.10.2026.</p>
+            <span className="deco-dot"></span>
+          </div>
+        </div>
 
         <div className="actions">
           <label className="custom-upload">
